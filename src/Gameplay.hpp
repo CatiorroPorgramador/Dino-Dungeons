@@ -18,6 +18,7 @@ public:
     }
 
     ~Gameplay() {
+        printf("Gameplay ended.\n");
     }
 
     // Functions
