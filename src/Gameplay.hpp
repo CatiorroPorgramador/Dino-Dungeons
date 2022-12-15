@@ -4,6 +4,7 @@
 #include "Player.hpp"
 #include "Enemies/Zombie.hpp"
 #include "Engine/Collision.hpp"
+#include "Engine/TileMap.hpp"
  
 class Gameplay {
 public:
@@ -19,6 +20,7 @@ public:
         this->fps_text.setString(fps_string);
 
         // Level
+        level_map.Load("data/map.txt");
     }
 
     ~Gameplay() {
@@ -31,13 +33,12 @@ public:
 
         // Level Update
         zombie.update();
-        zombie.offset = -level_offset;
+        zombie.offset = level_offset;
 
         if (Collision::PixelPerfect(player.sword_sprite, zombie.sprite) && player.in_attack)
             zombie.kill();
-        
 
-        level_offset = player.direction;
+        level_offset = -player.direction;
 
         float currentTime = clock.restart().asSeconds();
         float fps = 1.f / (currentTime - last_time);
@@ -45,7 +46,7 @@ public:
 
         delta = clock.restart();
 
-        fps_string = "fps: " + std::to_string(static_cast<int>(fps));
+        fps_string = "Fps: " + std::to_string(static_cast<int>(fps));
         fps_text.setString(fps_string);
     }
 
@@ -53,6 +54,7 @@ public:
         window->draw(this->fps_text);
 
         player.render(window);
+
         zombie.render(window);
     }
 
@@ -66,6 +68,8 @@ private:
     sf::Vector2f level_offset;
 
     Zombie zombie;
+
+    TileMap level_map;
 
     sf::Text fps_text;
     std::string fps_string;

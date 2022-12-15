@@ -39,9 +39,7 @@ public:
 
 private:
     sf::Texture texture;
-
     sf::IntRect rect_source;
 
     bool live = true;
-
 };
