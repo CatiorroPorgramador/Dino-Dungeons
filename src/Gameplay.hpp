@@ -20,7 +20,7 @@ public:
         this->fps_text.setString(fps_string);
 
         // Level
-        level_map.Load("data/map.txt");
+        level_map.load("data/map.txt");
     }
 
     ~Gameplay() {
@@ -29,16 +29,9 @@ public:
 
     // Functions
     void update() {
-        player.update();
-
         // Level Update
-        zombie.update();
-        zombie.offset = level_offset;
-
         if (Collision::PixelPerfect(player.sword_sprite, zombie.sprite) && player.in_attack)
             zombie.kill();
-
-        level_offset = -player.direction;
 
         float currentTime = clock.restart().asSeconds();
         float fps = 1.f / (currentTime - last_time);
@@ -48,11 +41,23 @@ public:
 
         fps_string = "Fps: " + std::to_string(static_cast<int>(fps));
         fps_text.setString(fps_string);
+
+        // Objects
+        level_offset = -player.direction;
+        zombie.offset = level_offset;
+        level_map.offset = level_offset;
+
+        level_map.update();
+        zombie.update();
+
+        player.update();
     }
 
     void render(sf::RenderWindow *window) {
         window->draw(this->fps_text);
 
+        level_map.render(window);
+        
         player.render(window);
 
         zombie.render(window);
